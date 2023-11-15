@@ -1,0 +1,11 @@
+# backend server
+fastapi
+uvicorn[standard]
+websockets
+
+# utils
+rich
+numpy
+
+# test
+pytest
