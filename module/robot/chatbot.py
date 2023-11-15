@@ -1,27 +1,65 @@
-from typing import List, Generator
 from module.logger import logger
-import numpy as np
+from module.robot import deep_get, check_key_existence, KeyNotFoundError
+
+
+class Action:
+    def __init__(self, action: dict):
+        self.reply = deep_get(action, 'reply')
+        self.switch = deep_get(action, 'switch')
+        if self.reply is None and self.switch is None:
+            logger.warning(f"Empty action from {action}")
+            raise Exception
 
 
 class Scenario:
     def __init__(self, scenario: dict):
-        self.name = scenario['name']
-        self.triggers = [trigger.lower() for trigger in scenario['triggers']]
-        self.responses = scenario['responses']
+        self.triggers = deep_get(scenario, 'triggers')
+        self.action = deep_get(scenario, 'action')
+        check_key_existence(self, 'scenario', ['action', 'triggers'])
+        self.action = Action(self.action)
+
+
+class State:
+    def __init__(self, state: dict):
+        self.name = deep_get(state, 'name')
+        self.scenarios = deep_get(state, 'scenarios')
+        check_key_existence(self, 'state', ['name', 'scenarios'])
+
+        self.scenarios = [Scenario(scenario) for scenario in self.scenarios]
 
 
 class Chatbot:
     def __init__(self, script: dict):
-        self.scenarios = [Scenario(text) for text in script['scenarios']]
+        self.name = deep_get(script, 'name')
+        self.description = deep_get(script, 'description')
+        self.states = deep_get(script, 'states')
+        self.initial_state_name = deep_get(script, 'initial')
+        check_key_existence(self, 'Chatbot', ['name', 'description', 'states', 'initial_state_name'])
+        self.states: dict[str, State] = {state['name']: State(state) for state in self.states}
+        self.current_state = None
+        self.switch_state(self.initial_state_name)
 
-    def try_trigger(self, input: str) -> Generator[str]:
-        """
-        :param input: 用户输入的语句
-        :return: 触发的语句所构成的生成器。（因为可能触发多个语句）
-        """
-        words = input.split()
-        for word in words:
-            for scenario in self.scenarios:
-                if word.lower() in scenario.triggers:
-                    logger.info(f"Matched scenario: {scenario.name} with word {word}")
-                    yield np.random.choice(scenario.responses)
+    def switch_state(self, state_name):
+        if state_name not in self.states.keys():
+            logger.warning(f"Initial state does not exist: {state_name}")
+            raise KeyNotFoundError
+        self.current_state = self.states[state_name]
+        logger.info(f"Switch state to {state_name}")
+
+    def take_input(self, input_: str):
+        current_state = self.current_state  # make sure state does not change when search triggers
+        matched = False
+        for scenario in current_state.scenarios:
+            for trigger in scenario.triggers:
+                if trigger in input_:
+                    logger.info(f"Matched scenario with word: {trigger}")
+                    if scenario.action.switch:
+                        self.switch_state(scenario.action.switch)
+                    if scenario.action.reply:
+                        yield scenario.action.reply
+
+                    matched = True
+                    break
+            if matched:
+                matched = False
+                continue
