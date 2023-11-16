@@ -1,5 +1,5 @@
 from module.logger import logger
-from module.robot import deep_get, check_key_existence, KeyNotFoundError
+from .utils import deep_get, check_key_existence, KeyNotFoundError
 
 
 class Action:
