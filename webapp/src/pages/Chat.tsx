@@ -8,6 +8,7 @@ import {addInstance, closeSocket, setSocket} from '/src/features/robotSlice.ts'
 import {addMessage} from "/src/features/viewSlice.ts";
 import Modal from '/src/widgets/Modal.tsx'
 import {useCallback, useEffect, useState} from "react";
+import {toast} from "react-toastify";
 
 
 function Chat() {
@@ -29,6 +30,7 @@ function Chat() {
         const {instance_token: token} = await addInstanceApi(bid);
         if (token) {
             dispatch(addInstance({token, bid, name: instanceName, messages: []}))
+            toast("创建成功");
         } else {
             console.error("Get empty token");
         }
