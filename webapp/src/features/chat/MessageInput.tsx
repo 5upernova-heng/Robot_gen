@@ -1,3 +1,5 @@
+import {useAppDispatch, useAppSelector} from "/src/app/hooks.ts";
+import {addMessage} from "/src/features/viewSlice.ts";
 import "/src/styles/MessageInput.css"
 import {useState} from "react";
 
@@ -6,8 +8,12 @@ type Props = { disabled: boolean }
 function MessageInput({disabled}: Props) {
     const [message, setMessage] = useState("");
 
-    const handleSubmit = async () => {
+    const {socket} = useAppSelector(state => state.robot)
+    const dispatch = useAppDispatch()
 
+    const handleSubmit = async () => {
+        socket?.send(message);
+        dispatch(addMessage({messageText: message, sender: 'user'}))
     }
 
     return (
@@ -24,7 +30,7 @@ function MessageInput({disabled}: Props) {
             </div>
             <button disabled={disabled} className="btn btn-lg rounded-3 btn-primary shadow"
                     onClick={() => {
-                        handleSubmit()
+                        handleSubmit().then()
                     }}
             >发送
             </button>

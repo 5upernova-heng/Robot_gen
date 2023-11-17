@@ -1,62 +1,35 @@
-import {Chat, Group, MessageType, TabType, User} from "/src/api/types.ts";
+import {RobotInstance} from "/src/api/types.ts";
+import {UserType} from "/src/style.ts";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 type State = {
-    tab: TabType
-    mode: MessageType
-    currentChat: Chat
-    chats: Chat[]
+    currentInstance: RobotInstance
 }
 
-const emptyUser: User = {id: -1, name: "", username: ""}
-const emptyChat: Chat = {id: -1, name: "", type: MessageType.single, entity: emptyUser}
+const emptyInstance: RobotInstance = {bid: "", name: "", token: "", messages: []}
 
 const initialState: State = {
-    tab: 0,
-    mode: 0,
-    currentChat: emptyChat,
-    chats: []
+    currentInstance: emptyInstance
 }
 
 export const viewSlice = createSlice({
     name: "view",
     initialState,
     reducers: {
-        switchTab: (state, action: PayloadAction<TabType>) => {
-            return {...state, tab: action.payload}
+        switchInstance: (state, action: PayloadAction<RobotInstance>) => {
+            return {...state, currentInstance: action.payload}
         },
-        switchMode: (state, action: PayloadAction<MessageType>) => {
-            return {...state, mode: action.payload}
-        },
-        switchChat: (state, action: PayloadAction<Chat>) => {
-            return {...state, currentChat: action.payload}
-        },
-        updateChats: (state, action: PayloadAction<{ friends: User[], groups: Group[] }>) => {
-            const {friends, groups} = action.payload;
-            const newChats: Chat[] = []
-            friends.map((friend) => {
-                const chat = {
-                    id: friend.id,
-                    type: MessageType.single,
-                    name: friend.name,
-                    entity: friend
-                }
-                newChats.push(chat)
+        addMessage: (state, action: PayloadAction<{ messageText: string, sender: UserType }>) => {
+            const {messageText, sender} = action.payload;
+            state.currentInstance.messages.push({
+                messageText,
+                messageTime: String(new Date()),
+                sender,
             })
-            groups.map((group) => {
-                const chat = {
-                    id: group.id,
-                    type: MessageType.group,
-                    name: group.name,
-                    entity: group
-                }
-                newChats.push(chat)
-            })
-            return {...state, chats: newChats}
         }
+
     }
 })
-
-export const {switchTab, switchMode, switchChat, updateChats} = viewSlice.actions
+export const {switchInstance, addMessage} = viewSlice.actions
 
 export default viewSlice.reducer
