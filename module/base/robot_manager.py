@@ -76,7 +76,7 @@ class RobotManager:
         return True
 
     def talk(self, robot_hash, input_: str) -> List[str]:
-        logger.warning(f"User: '{input_}' -> {robot_hash}")
+        logger.info(f"User: '{input_}' -> {robot_hash}")
         robot = self.robot_instances[robot_hash]
         replies = [action for action in robot.take_input(input_)]
         if replies:
