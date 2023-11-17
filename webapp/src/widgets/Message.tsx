@@ -29,7 +29,7 @@ function Message({message, time, name, role}: Props) {
                        style={{
                            whiteSpace: "pre-line",
                            wordBreak: "break-all",
-                           fontSize: "1.5rem"
+                           fontSize: "1.2rem"
                        }}>{message}</p>
                 </div>
             </div>
