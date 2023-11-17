@@ -1,5 +1,6 @@
+from module.base.utils import deep_get
 from module.logger import logger
-from .utils import deep_get, check_key_existence, KeyNotFoundError
+from .utils import check_key_existence, KeyNotFoundError
 
 
 class Action:

@@ -3,7 +3,6 @@ from typing import Optional
 import yaml
 
 from module.logger import logger
-from module.robot import Chatbot
 
 
 def syntax_check(script: str) -> Optional[dict]:
@@ -15,7 +14,7 @@ def syntax_check(script: str) -> Optional[dict]:
     return robot
 
 
-def parse(script: str) -> Optional[Chatbot]:
+def parse(script: str) -> Optional[dict]:
     """
     :param script: user script that use to generate the robot
     :return: Robot defined by the script
@@ -24,7 +23,4 @@ def parse(script: str) -> Optional[Chatbot]:
     if robot is None:
         return None
     logger.info("Parse script file succeed")
-    robot = Chatbot(robot)
-    logger.info(f"Robot generated: {robot.name}")
-    logger.info(robot.description)
     return robot
