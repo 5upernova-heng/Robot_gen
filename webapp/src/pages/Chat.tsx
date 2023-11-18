@@ -4,22 +4,22 @@ import RightBar from "/src/components/RightBar.jsx";
 import SideBar from "/src/components/SideBar.jsx";
 import MessageContainer from "/src/features/chat/MessageContainer.tsx";
 import MessageInput from "/src/features/chat/MessageInput.tsx";
-import {addInstance, closeSocket, setSocket} from '/src/features/robotSlice.ts'
-import {addMessage} from "/src/features/viewSlice.ts";
+import {addInstance, addMessage, closeSocket, setSocket} from '/src/features/robotSlice.ts'
 import Modal from '/src/widgets/Modal.tsx'
 import {useCallback, useEffect, useState} from "react";
 import {toast} from "react-toastify";
 
 
 function Chat() {
-    const {currentInstance} = useAppSelector(state => ({...state.view,}))
+    const {currentInstance, instances} = useAppSelector(state => ({...state.robot,}))
     const {schema} = useAppSelector(state => state.robot)
     const dispatch = useAppDispatch();
 
-    const title = currentInstance.bid === ""
+    const instance = instances.find((i) => i.token === currentInstance);
+
+    const title = currentInstance === ""
         ? "选择一个对话或创建新的机器人"
-        : currentInstance.name;
-    const {token} = currentInstance;
+        : instance?.name;
 
     // form
     const [selectedIndex, changeIndex] = useState<number>(0)
@@ -37,8 +37,8 @@ function Chat() {
     }, [dispatch, instanceName, schema, selectedIndex])
 
     useEffect(() => {
-        if (token !== "") {
-            const url = `ws://localhost:8000/talk/${token}`
+        if (currentInstance !== "") {
+            const url = `ws://localhost:8000/talk/${currentInstance}`
             const socket = new WebSocket(url);
             socket.onmessage = (event) => {
                 dispatch(addMessage({messageText: event.data, sender: "others"}));
@@ -48,7 +48,8 @@ function Chat() {
         return () => {
             dispatch(closeSocket());
         };
-    }, [token, dispatch])
+    }, [currentInstance, dispatch])
+
     return (
         <>
             <div className="d-flex">
@@ -58,11 +59,11 @@ function Chat() {
                         <div className="border-bottom d-flex justify-content-start align-items-center"
                              style={{height: "3.5rem"}}>
                             <h2 className="mb-0">{`「${title}」`}</h2>
-                            <p className="mb-0">{token && `#${token}`}</p>
+                            <p className="mb-0">{currentInstance && `#${currentInstance}`}</p>
                         </div>
                         <MessageContainer/>
                         <div className="position-absolute bottom-0" style={{left: "0%", right: "10%"}}>
-                            <MessageInput disabled={!currentInstance.bid}/>
+                            <MessageInput disabled={!instance?.bid}/>
                         </div>
                     </div>
                     <div className="col-2 border-start">

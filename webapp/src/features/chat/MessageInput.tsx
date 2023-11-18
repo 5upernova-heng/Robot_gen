@@ -1,5 +1,5 @@
 import {useAppDispatch, useAppSelector} from "/src/app/hooks.ts";
-import {addMessage} from "/src/features/viewSlice.ts";
+import {addMessage} from "/src/features/robotSlice.ts";
 import "/src/styles/MessageInput.css"
 import {useState} from "react";
 

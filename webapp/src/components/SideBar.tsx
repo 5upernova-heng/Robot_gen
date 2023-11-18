@@ -1,6 +1,5 @@
 import {useAppDispatch, useAppSelector} from "/src/app/hooks.ts";
-import {fetchSchemas} from "/src/features/robotSlice.ts";
-import {switchInstance} from "/src/features/viewSlice.ts";
+import {fetchSchemas, switchInstance} from "/src/features/robotSlice.ts";
 import Avatar from "/src/widgets/Avatar.jsx";
 import {Modal} from "bootstrap"
 
@@ -11,7 +10,7 @@ function SideBar() {
     return (<div className="d-flex flex-column align-items-center gap-3 pt-2 p-2"
                  style={{height: "100vh", backgroundColor: "#e3e5e8"}}
     >
-        {instances.map((instance, index) => <div key={index} onClick={() => dispatch(switchInstance(instance))}>
+        {instances.map((instance, index) => <div key={index} onClick={() => dispatch(switchInstance(instance.token))}>
                 <Avatar name={instance.name}/>
             </div>
         )}
