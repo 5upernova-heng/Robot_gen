@@ -11,7 +11,7 @@ function SideBar() {
     return (<div className="d-flex flex-column align-items-center gap-3 pt-2 p-2"
                  style={{height: "100vh", backgroundColor: "#e3e5e8"}}
     >
-        {instances.map((instance) => <div onClick={() => dispatch(switchInstance(instance))}>
+        {instances.map((instance, index) => <div key={index} onClick={() => dispatch(switchInstance(instance))}>
                 <Avatar name={instance.name}/>
             </div>
         )}
