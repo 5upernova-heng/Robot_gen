@@ -1,10 +1,9 @@
 import {addInstanceApi} from "/src/api/robotApi.ts";
 import {useAppDispatch, useAppSelector} from "/src/app/hooks.ts";
-import RightBar from "/src/components/RightBar.jsx";
 import SideBar from "/src/components/SideBar.jsx";
 import MessageContainer from "/src/features/chat/MessageContainer.tsx";
 import MessageInput from "/src/features/chat/MessageInput.tsx";
-import {addInstance, addMessage, closeSocket, setSocket} from '/src/features/robotSlice.ts'
+import {addInstance, addMessage, closeSocket, setSocket, switchInstance} from '/src/features/robotSlice.ts'
 import Modal from '/src/widgets/Modal.tsx'
 import {useCallback, useEffect, useState} from "react";
 import {toast} from "react-toastify";
@@ -31,6 +30,7 @@ function Chat() {
         if (token) {
             dispatch(addInstance({token, bid, name: instanceName, messages: []}))
             toast("创建成功");
+            dispatch(switchInstance(token))
         } else {
             console.error("Get empty token");
         }
@@ -52,23 +52,30 @@ function Chat() {
 
     return (
         <>
-            <div className="d-flex">
+            <div className="d-flex" style={{background: "#e3e5e8"}}>
                 <SideBar/>
-                <div className="d-flex w-100">
-                    <div className="col">
-                        <div className="border-bottom d-flex justify-content-start align-items-center"
-                             style={{height: "3.5rem"}}>
-                            <h2 className="mb-0">{`「${title}」`}</h2>
-                            <p className="mb-0">{currentInstance && `#${currentInstance}`}</p>
-                        </div>
+                <div className="position-absolute d-flex" style={{left: "4.5rem", right: "0%"}}>
+                    <div
+                        className="position-fixed
+                            z-1 border-bottom border-bottom w-100
+                            d-flex  justify-content-start align-items-center"
+                        style={{height: "3.5rem", background: "#e3e5e8"}}>
+                        <h2 className="mb-0">{`「${title}」`}</h2>
+                        <p className="mb-0">{currentInstance && `#${currentInstance}`}</p>
+                    </div>
+
+                    <div className="w-100 overflow-auto" style={{height: "calc(100vh-10.5rem)"}}>
+                        <div style={{height: "3.5rem"}}></div>
                         <MessageContainer/>
-                        <div className="position-absolute bottom-0" style={{left: "0%", right: "10%"}}>
-                            <MessageInput disabled={!instance?.bid}/>
-                        </div>
+                        <div style={{height: "9rem"}}></div>
                     </div>
-                    <div className="col-2 border-start">
-                        <RightBar/>
+                    <div className="position-fixed bottom-0"
+                         style={{left: "4.5rem", right: "0%", backdropFilter: "blur(10px)"}}>
+                        <MessageInput disabled={!instance?.bid}/>
                     </div>
+                    {/*<div className="col-2 border-start">*/}
+                    {/*    <RightBar/>*/}
+                    {/*</div>*/}
                 </div>
             </div>
             <Modal id={"addConversation"}
