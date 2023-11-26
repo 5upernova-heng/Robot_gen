@@ -36,7 +36,9 @@ class Chatbot:
         self.description = deep_get(script, 'description')
         self.states = deep_get(script, 'states')
         self.initial_state_name = deep_get(script, 'initial')
-        check_key_existence(self, 'Chatbot', ['name', 'description', 'states', 'initial_state_name'])
+        self.opening = deep_get(script, 'opening')
+        check_key_existence(self, 'Chatbot', ['name', 'description', 'states',
+                                              'initial_state_name', 'opening'])
         self.states: dict[str, State] = {state['name']: State(state) for state in self.states}
         self.current_state = None
         self.switch_state(self.initial_state_name)

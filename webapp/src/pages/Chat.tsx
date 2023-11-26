@@ -1,9 +1,11 @@
 import {addInstanceApi} from "/src/api/robotApi.ts";
+import {Message} from "/src/api/types.ts";
 import {useAppDispatch, useAppSelector} from "/src/app/hooks.ts";
 import SideBar from "/src/components/SideBar.jsx";
 import MessageContainer from "/src/features/chat/MessageContainer.tsx";
 import MessageInput from "/src/features/chat/MessageInput.tsx";
 import {addInstance, addMessage, closeSocket, setSocket, switchInstance} from '/src/features/robotSlice.ts'
+import {formatDate} from "/src/utils/createMessage.ts";
 import Modal from '/src/widgets/Modal.tsx'
 import {useCallback, useEffect, useState} from "react";
 import {toast} from "react-toastify";
@@ -26,9 +28,14 @@ function Chat() {
 
     const createInstance = useCallback(async () => {
         const bid = schema[selectedIndex].bid
+        const opening: Message = {
+            messageText: schema[selectedIndex].opening,
+            messageTime: formatDate(new Date()),
+            sender: "others"
+        }
         const {instance_token: token} = await addInstanceApi(bid);
         if (token) {
-            dispatch(addInstance({token, bid, name: instanceName, messages: []}))
+            dispatch(addInstance({token, bid, name: instanceName, messages: [opening]}))
             toast("创建成功");
             dispatch(switchInstance(token))
         } else {

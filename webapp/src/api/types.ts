@@ -4,6 +4,7 @@ export type Robot = {
     bid: string
     name: string
     description: string
+    opening: string
 }
 
 export type RobotInstance = {
@@ -12,8 +13,6 @@ export type RobotInstance = {
     name: string
     messages: Message[]
 }
-
-export enum TabType {addFriends, joinGroup, createGroup}
 
 export type Message = {
     sender: UserType

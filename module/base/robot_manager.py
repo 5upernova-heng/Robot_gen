@@ -32,6 +32,7 @@ class RobotManager:
                 'bid': key,
                 'name': value['name'],
                 'description': value['description'],
+                'opening': value['opening'],
             }
 
     def load_schemas(self):

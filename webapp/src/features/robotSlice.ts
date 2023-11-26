@@ -2,6 +2,7 @@ import {listRobotSchema} from "/src/api/robotApi.ts";
 import {Robot, RobotInstance} from "/src/api/types.ts";
 import {AppDispatch, RootState} from "/src/app/store.ts";
 import {UserType} from "/src/style.ts";
+import {formatDate} from "/src/utils/createMessage.ts";
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 
@@ -17,25 +18,6 @@ const initialState: State = {
     instances: [],
     socket: null,
     currentInstance: ""
-}
-
-const padTo2Digits = (num: number) => {
-    return num.toString().padStart(2, '0');
-}
-const formatDate = (date: Date) => {
-    return (
-        [
-            date.getFullYear(),
-            padTo2Digits(date.getMonth() + 1),
-            padTo2Digits(date.getDate()),
-        ].join('-') +
-        'T' +
-        [
-            padTo2Digits(date.getHours()),
-            padTo2Digits(date.getMinutes()),
-            padTo2Digits(date.getSeconds()),
-        ].join(':')
-    );
 }
 
 export const fetchSchemas = createAsyncThunk<{ robots: Robot[] }, void, { state: RootState, dispatch: AppDispatch }>(
