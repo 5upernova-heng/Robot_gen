@@ -1,4 +1,4 @@
-from module.base.utils import deep_get
+from module.base import deep_get
 from module.logger import logger
 from .utils import check_key_existence, KeyNotFoundError
 
@@ -24,7 +24,8 @@ class State:
     def __init__(self, state: dict):
         self.name = deep_get(state, 'name')
         self.scenarios = deep_get(state, 'scenarios')
-        check_key_existence(self, 'state', ['name', 'scenarios'])
+        self.default = deep_get(state, 'default')
+        check_key_existence(self, 'state', ['name', 'scenarios', 'default'])
 
         self.scenarios = [Scenario(scenario) for scenario in self.scenarios]
 
@@ -50,6 +51,7 @@ class Chatbot:
     def take_input(self, input_: str):
         current_state = self.current_state  # make sure state does not change when search triggers
         matched = False
+        matched_once = False
         for scenario in current_state.scenarios:
             for trigger in scenario.triggers:
                 if trigger in input_:
@@ -58,9 +60,13 @@ class Chatbot:
                         self.switch_state(scenario.action.switch)
                     if scenario.action.reply:
                         yield scenario.action.reply
-
+                    matched_once = True
                     matched = True
                     break
             if matched:
                 matched = False
                 continue
+
+        if not matched_once:
+            logger.warning("Does not match any words, use default reply")
+            yield current_state.default

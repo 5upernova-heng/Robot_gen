@@ -10,7 +10,7 @@ from yaml import YAMLError
 
 from module.logger import logger
 from module.parser import parse
-from module.robot import Chatbot
+from module.robot.chatbot import Chatbot
 from .utils import deep_get
 
 

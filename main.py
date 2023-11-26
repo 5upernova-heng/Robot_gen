@@ -1,6 +1,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
-from module.base import SocketManager, RobotManager
+from module.base.robot_manager import RobotManager
+from module.base.socket_manager import SocketManager
 from module.logger import logger
 
 app = FastAPI()
