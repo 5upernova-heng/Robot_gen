@@ -1,0 +1,31 @@
+name: 助教机器人
+description: 助教机器人，可以进行简单的查询服务
+initial: start
+opening: 同学你好，我是助教机器人，可以为你查询课后作业、课程成绩等相关信息
+states:
+  - name: start
+    default: 对不起，目前没有这个功能
+    scenarios:
+      - triggers:
+          - 成绩
+          - 学分
+          - 绩点
+        action:
+          reply:
+            同学，你的课程成绩是 XXX
+      - triggers:
+          - 作业
+        action:
+          reply:
+            目前的课后作业是 XXX
+      - triggers:
+          - 联系老师
+        action:
+          reply:
+            老师的联系方式是 XXX
+      - triggers:
+          - 意见
+          - 建议
+        action:
+          reply:
+            感谢同学的宝贵意见，我们会做得更好

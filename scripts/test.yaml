@@ -1,0 +1,29 @@
+name: demo robot
+description: chatbot demo
+initial: state_a
+opening: opening statement
+states:
+  - name: state_a
+    default: Sorry, I can't understand what's your mean
+    scenarios:
+      - triggers:
+          - hello
+          - hi
+          - hey
+        action:
+          reply:
+            What can I do for you
+          switch:
+            state_b
+  - name: state_b
+    default: Sorry, I can't understand what's your mean
+    scenarios:
+      - triggers:
+          - hello
+          - hi
+          - hey
+        action:
+          reply:
+            What can I do for you 2
+          switch:
+            state_a
