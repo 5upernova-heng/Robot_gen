@@ -5,6 +5,7 @@ scripts = """
 name: test
 description: 用户输入测试
 initial: state_a
+opening: opening statement
 states:
   - name: state_a
     default: default reply
