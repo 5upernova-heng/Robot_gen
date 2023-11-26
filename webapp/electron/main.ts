@@ -23,12 +23,13 @@ function createWindow() {
         icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
+            webSecurity: false,
         },
         minWidth: 1200,
         minHeight: 800,
     })
     win.setMenu(null)
-
+    // win.webContents.openDevTools()
     // Test active push message to Renderer-process.
     win.webContents.on('did-finish-load', () => {
         win?.webContents.send('main-process-message', (new Date).toLocaleString())
